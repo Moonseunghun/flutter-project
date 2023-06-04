@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:hubs/utils.dart';
 import '../item/list_item.dart';
 import '../item/slider_item.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,7 @@ class _NetflixAppState extends State<NetflixApp> {
     "https://www.meconomynews.com/news/photo/202101/49577_56959_4850.jpg",
     "https://img.hankyung.com/photo/201901/AA.18811964.1.jpg",
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,126 +53,136 @@ class _NetflixAppState extends State<NetflixApp> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          // let's start by building our carousel slider
-          children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                aspectRatio: 16 / 9,
-                viewportFraction: 1.0,
-                height: 280.0,
-                enlargeCenterPage: true,
-              ),
-              items: [
-                sliderItem(movieCarousselUrl[0], movieTitle[0]),
-                sliderItem(movieCarousselUrl[1], movieTitle[1]),
-                sliderItem(movieCarousselUrl[2], movieTitle[2]),
-                sliderItem(movieCarousselUrl[3], movieTitle[3]),
+        child: FutureBuilder<dynamic>(
+          future: getYoutubeData(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // 로딩 중일 때 표시될 위젯
+            }
+            print(snapshot.data);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // let's start by building our carousel slider
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                    enableInfiniteScroll: false,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 1.0,
+                    height: 280.0,
+                    enlargeCenterPage: true,
+                  ),
+                  items: [
+                    sliderItem(movieCarousselUrl[0], movieTitle[0]),
+                    sliderItem(movieCarousselUrl[1], movieTitle[1]),
+                    sliderItem(movieCarousselUrl[2], movieTitle[2]),
+                    sliderItem(movieCarousselUrl[3], movieTitle[3]),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 0.0, horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Recomendation",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        height: 150.0,
+                        width: double.infinity,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            // let's create a new custom widget for our list item
+                            GestureDetector(
+                              // 이사베
+                              child: listItem(movieImageUrl[0], "RISABAE"),
+                              onTap: () {
+                                Get.toNamed('/inf_inform');
+                                Get.to(Influencer_page(), arguments: "risabae");
+                              },
+                            ),
+                            GestureDetector(
+                              // Saerom Min개코의 오픈스튜디오
+                              child: listItem(movieImageUrl[1], "Saerom Min"),
+                              onTap: () {
+                                Get.toNamed('/inf_inform');
+                                Get.to(Influencer_page(),
+                                    arguments: "saerom_min");
+                              },
+                            ),
+                            listItem(movieImageUrl[2], "C"),
+                            listItem(movieImageUrl[3], "D"),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "Skincare",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        height: 150.0,
+                        width: double.infinity,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            // let's create a new custom widget for our list item
+                            GestureDetector(
+                              child: listItem(movieImageUrl[0], "A"),
+                              onTap: () => Get.toNamed('/inf_inform'),
+                            ),
+                            listItem(movieImageUrl[1], "B"),
+                            listItem(movieImageUrl[2], "C"),
+                            listItem(movieImageUrl[3], "D"),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "Make Up",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        height: 150.0,
+                        width: double.infinity,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            // let's create a new custom widget for our list item
+                            GestureDetector(
+                              child: listItem(movieImageUrl[0], "A"),
+                              onTap: () => Get.toNamed('/inf_inform'),
+                            ),
+                            listItem(movieImageUrl[1], "B"),
+                            listItem(movieImageUrl[2], "C"),
+                            listItem(movieImageUrl[3], "D"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Recomendation",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Container(
-                    height: 150.0,
-                    width: double.infinity,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        // let's create a new custom widget for our list item
-                        GestureDetector(
-                          // 이사베
-                          child: listItem(movieImageUrl[0], "RISABAE"),
-                          onTap: () {
-                            Get.toNamed('/inf_inform');
-                            Get.to(Influencer_page(), arguments: "risabae");
-                          },
-                        ),
-                        GestureDetector(
-                          // Saerom Min개코의 오픈스튜디오
-                          child: listItem(movieImageUrl[1], "Saerom Min"),
-                          onTap: () {
-                            Get.toNamed('/inf_inform');
-                            Get.to(Influencer_page(), arguments: "saerom_min");
-                          },
-                        ),
-                        listItem(movieImageUrl[2], "C"),
-                        listItem(movieImageUrl[3], "D"),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    "Skincare",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Container(
-                    height: 150.0,
-                    width: double.infinity,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        // let's create a new custom widget for our list item
-                        GestureDetector(
-                          child: listItem(movieImageUrl[0], "A"),
-                          onTap: () => Get.toNamed('/inf_inform'),
-                        ),
-                        listItem(movieImageUrl[1], "B"),
-                        listItem(movieImageUrl[2], "C"),
-                        listItem(movieImageUrl[3], "D"),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    "Make Up",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Container(
-                    height: 150.0,
-                    width: double.infinity,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        // let's create a new custom widget for our list item
-                        GestureDetector(
-                          child: listItem(movieImageUrl[0], "A"),
-                          onTap: () => Get.toNamed('/inf_inform'),
-                        ),
-                        listItem(movieImageUrl[1], "B"),
-                        listItem(movieImageUrl[2], "C"),
-                        listItem(movieImageUrl[3], "D"),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
-
     );
   }
 }
